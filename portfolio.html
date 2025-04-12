@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Portfolio</title>
+    <link rel="stylesheet" href="portfolio.css" />
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.5/gsap.min.js"
+      defer
+    ></script>
+  </head>
+  <body>
+    <div id="header-placeholder"></div>
+
+    <div class="corner top-left"></div>
+    <div class="corner top-right"></div>
+    <div class="corner bottom-left"></div>
+    <div class="corner bottom-right"></div>
+
+    <section class="portfolio">
+      <header class="section-head">
+        <h1>Portfolio</h1>
+      </header>
+
+      <main class="mainContainer">
+        <div class="button-group">
+          <button class="button active" data-filter="marriage">Marriage</button>
+          <button class="button" data-filter="events">Events</button>
+          <button class="button" data-filter="promotion">Promotion</button>
+        </div>
+
+        <div class="gallery"></div>
+      </main>
+    </section>
+
+    <div id="modal" class="modal">
+      <div class="modal-content">
+        <span class="close-btn">&times;</span>
+        <div class="modal-image">
+          <img src="" alt="Enlarged view" />
+        </div>
+        <div class="modal-details">
+          <h2>Image Details</h2>
+          <p>This is your image description.</p>
+        </div>
+      </div>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js" defer></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js" defer></script>
+
+
+<script>
+  // Load the header dynamically
+  fetch('header.html')
+    .then(response => response.text())
+    .then(data => {
+      document.getElementById('header-placeholder').innerHTML = data;
+
+      // ✅ Place GSAP scroll animation code *here*, inside this .then()
+      let lastScroll = window.scrollY;
+      const navbar = document.querySelector(".navbar");
+
+      gsap.set(navbar, { y: 0 });
+
+      window.addEventListener("scroll", () => {
+        const currentScroll = window.scrollY;
+
+        if (currentScroll > lastScroll && currentScroll > 100) {
+          gsap.to(navbar, {
+            y: "-100%",
+            duration: 0.4,
+            ease: "power2.out"
+          });
+        } else {
+          gsap.to(navbar, {
+            y: "0%",
+            duration: 0.4,
+            ease: "power2.out"
+          });
+        }
+
+        lastScroll = currentScroll;
+      });
+    })
+    .catch(error => console.error('Error loading header:', error));
+</script>
+
+
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        const gallery = document.querySelector(".gallery");
+
+        const imageData = {
+          marriage: [
+            "https://ik.imagekit.io/ad37i/portfolio%20images/section2%20image%20part2/p1.JPG?updatedAt=1744276593172",
+            "https://ik.imagekit.io/ad37i/portfolio%20images/section2%20image%20part2/p2.JPG?updatedAt=1744276590868",
+            "https://ik.imagekit.io/ad37i/portfolio%20images/section2%20image%20part2/p3.JPG?updatedAt=1744276593147",
+          ],
+          events: [
+            "https://ik.imagekit.io/ad37i/portfolio%20images/DSC00189.JPG?updatedAt=1744276577139",
+            "https://ik.imagekit.io/ad37i/portfolio%20images/section2%20images%20part1/2.JPG?updatedAt=1744276594981",
+            "https://ik.imagekit.io/ad37i/portfolio%20images/section2%20images%20part1/3.JPG?updatedAt=1744276597829",
+          ],
+          promotion: [
+            "https://ik.imagekit.io/ad37i/portfolio%20images/section2%20image%20part2/p1.JPG?updatedAt=1744276593172",
+            "https://ik.imagekit.io/ad37i/portfolio%20images/section2%20image%20part2/p2.JPG?updatedAt=1744276590868",
+            "https://ik.imagekit.io/ad37i/portfolio%20images/section2%20image%20part2/p3.JPG?updatedAt=1744276593147",
+            "https://ik.imagekit.io/ad37i/portfolio%20images/section2%20image%20part2/p4.JPG?updatedAt=1744276588310",
+            "https://ik.imagekit.io/ad37i/portfolio%20images/section2%20image%20part2/p5.JPG?updatedAt=1744276591286",
+            "https://ik.imagekit.io/ad37i/portfolio%20images/DSC01012.JPG?updatedAt=1744276586391",
+            "https://ik.imagekit.io/ad37i/portfolio%20images/DSC05756.JPG?updatedAt=1744276578667",
+            "https://ik.imagekit.io/ad37i/portfolio%20images/DSC00189.JPG?updatedAt=1744276577139",
+          ],
+        };
+
+        function loadImages(category) {
+          gallery.innerHTML = "";
+          imageData[category].forEach((file) => {
+            const item = document.createElement("div");
+            item.classList.add("item", category);
+            item.setAttribute("data-category", category);
+            item.setAttribute("data-filename", file);
+            item.innerHTML = `
+             <img src="${file}" alt="portfolio-image" />
+             <div class="overlay">
+             <button class="view-more">VIEW MORE</button>
+             </div> `;
+
+            gallery.appendChild(item);
+          });
+          attachModalListeners();
+        }
+
+        function attachModalListeners() {
+          const modal = document.getElementById("modal");
+          const modalImage = modal.querySelector(".modal-image img");
+          const closeBtn = modal.querySelector(".close-btn");
+
+          document.querySelectorAll(".view-more").forEach((button) => {
+            button.addEventListener("click", function () {
+              const parent = this.closest(".item");
+              const category = parent.getAttribute("data-category");
+              const filename = parent.getAttribute("data-filename");
+              const imagePath = filename;
+
+              modalImage.setAttribute("src", imagePath);
+              modal.style.display = "flex";
+              gsap.set(modal.querySelector(".modal-content"), {
+                scale: 0.8,
+                opacity: 0,
+              });
+              gsap.to(modal.querySelector(".modal-content"), {
+                duration: 0.5,
+                scale: 1,
+                opacity: 1,
+              });
+            });
+          });
+
+          closeBtn.addEventListener("click", closeModal);
+          modal.addEventListener("click", (e) => {
+            if (e.target === modal) closeModal();
+          });
+
+          function closeModal() {
+            gsap.to(modal.querySelector(".modal-content"), {
+              duration: 0.5,
+              scale: 0.8,
+              opacity: 0,
+              onComplete: () => {
+                modal.style.display = "none";
+              },
+            });
+          }
+        }
+
+        // Handle filter button clicks
+        document.querySelectorAll(".button").forEach((button) => {
+          button.addEventListener("click", () => {
+            document
+              .querySelectorAll(".button")
+              .forEach((btn) => btn.classList.remove("active"));
+            button.classList.add("active");
+            const filter = button.getAttribute("data-filter");
+            loadImages(filter);
+          });
+        });
+
+        // Load first category by default
+        loadImages("marriage");
+      });
+    </script>
+  </body>
+</html>

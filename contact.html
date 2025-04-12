@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Contact / Book</title>
+  <link rel="stylesheet" href="contact.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js" defer></script>
+  <script src="https://cdn.emailjs.com/dist/email.min.js" defer></script>
+  <script src="script.js" defer></script>
+</head>
+<body>
+  <div class="video-section">
+    <video autoplay muted loop>
+      <source src="https://ik.imagekit.io/ad37i/video_2025-03-13_11-18-49.mp4?updatedAt=1744276407455" type="video/mp4" />
+    </video>
+    <div class="overlay"></div>
+  </div>
+
+  <div id="header-placeholder"></div>
+
+  <div class="container">
+    <h1>BOOK</h1>
+    <p>We’re excited to learn more about your needs.</p>
+
+    <form id="contact-form">
+      <div class="form-group">
+        <input type="text" name="first_name" placeholder="Full Name*" required />
+      </div>
+
+      <div class="form-group">
+        <input type="text" name="phone" required placeholder="Contact No.*"/>
+      </div>
+      <div class="form-group">
+        <input type="email" name="email" required placeholder="Email Address*"/>
+      </div>
+
+      <div class="form-group-full">
+        <input type="text" name="location" required placeholder="Address*"/>
+      </div>
+
+      <div class="form-group-full">
+        <select name="service" required>
+          <option value="Tattoo">Tattoo</option>
+          <option value="Piercing">Piercing</option>
+          <option value="Consultation">Consultation</option>
+        </select>
+      </div>
+
+      <div class="form-group-full">
+        <textarea name="message" placeholder="Message"></textarea>
+      </div>
+
+      <button type="submit">Send</button>
+    </form>
+  </div>
+
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js" defer></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js" defer></script>
+  <script src="contact.js"></script>
+  <script>
+    // Load the header dynamically
+    fetch('header.html')
+      .then(response => response.text())
+      .then(data => {
+        document.getElementById('header-placeholder').innerHTML = data;
+  
+        // ✅ Place GSAP scroll animation code *here*, inside this .then()
+        let lastScroll = window.scrollY;
+        const navbar = document.querySelector(".navbar");
+  
+        gsap.set(navbar, { y: 0 });
+  
+        window.addEventListener("scroll", () => {
+          const currentScroll = window.scrollY;
+  
+          if (currentScroll > lastScroll && currentScroll > 100) {
+            gsap.to(navbar, {
+              y: "-100%",
+              duration: 0.4,
+              ease: "power2.out"
+            });
+          } else {
+            gsap.to(navbar, {
+              y: "0%",
+              duration: 0.4,
+              ease: "power2.out"
+            });
+          }
+  
+          lastScroll = currentScroll;
+        });
+      })
+      .catch(error => console.error('Error loading header:', error));
+  </script>
+  
+</body>
+</html>
